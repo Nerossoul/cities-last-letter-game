@@ -1,0 +1,4 @@
+pages:
+  stage: deploy
+  only:
+  - master
