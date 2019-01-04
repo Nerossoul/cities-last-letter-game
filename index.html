@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Поиграем в города?</title>
+    <script src="goroda.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+  <div id="main_game_app">
+    <button @click="show_game_board=!show_game_board">{{show_game_board ? "New game" : "Stop game"}}</button>
+    <div v-if = "show_game_board">Начните новую игру!</div>
+    <div v-else>
+      <new-game></new-game>
+    </div>
+  </div>
+
+
+
+
+  <script>
+    Vue.component('new-game', {
+      data: function(){
+        return {
+          cities: goroda_array,
+          current_player_answer: '',
+          input_message : '',
+          used_cities : [],
+          is_it_good_city:false,
+          first_letter: '',
+          last_letter: ''
+        }
+      } ,
+      methods: {
+        update_user_answer(event) {
+          console.log(event.value);
+          this.current_player_answer = event.value;
+        },
+        check_current_player_answer() {
+          this.input_message = '';
+            correct_first_letter = false;
+            correct_city_name = false;
+            this_city_not_used_before = true;
+          if (this.current_player_answer.toLowerCase().split('')[0] == this.last_letter || this.last_letter === '') {
+             correct_first_letter = true;
+          } else {
+            this.input_message = ' Должен начинаться с буквы: ' + this.last_letter;
+          }
+          if (this.cities.indexOf( this.current_player_answer.toLowerCase() ) != -1 ) {
+            correct_city_name = true;
+          } else {
+            this.input_message += '/ Нет такого города';
+          }
+          if (this.used_cities.indexOf( this.current_player_answer.toLowerCase() ) != -1 ) {
+            this_city_not_used_before = false;
+            this.input_message += '/ Этот город уже называли!';
+          }
+          this.is_it_good_city = ( correct_first_letter && correct_city_name && this_city_not_used_before);
+        },
+        submit_answer() {
+          if (this.is_it_good_city) {
+            console.log('good proceed');
+            this.get_last_letter();
+            this.used_cities.push(this.current_player_answer.toLowerCase());
+            this.current_player_answer = '';
+            if (this.used_cities.length % 2 == 1) {
+              this.comp_move();
+            }
+          } else {
+            console.log('BAD');
+          }
+        },
+        comp_move() {
+          bad_move = true;
+          while(bad_move) {
+            this.current_player_answer = this.cities[Math.floor(Math.random() * this.cities.length)];
+            this.check_current_player_answer();
+            if (this.is_it_good_city) {
+              bad_move = false;
+              this.submit_answer();
+            }
+          }
+        },
+        get_last_letter() {
+          this.last_letter = this.current_player_answer.charAt(this.current_player_answer.length-1);
+        }
+      },
+      template: `<div>
+                    <hr>
+                    <h4>Введите название города</h4>
+                    <input type="text" name="" v-model= "current_player_answer" @input="check_current_player_answer()" @keyup.13="submit_answer()"><button @click="submit_answer()" :disabled="!is_it_good_city"> GO </button>
+                    <br> {{ current_player_answer }}
+                    <span v-if="current_player_answer === ''">Напишите город</span>
+                    <span v-else-if="!is_it_good_city"> - {{input_message}}</span>
+                    <span v-else> - OK</span>
+                    <br><span v-if="last_letter != ''"> Начните с буквы: <b> {{ last_letter }} </b> </span>
+                    <hr>
+                    <div>
+                    <span v-for="(city, index) of used_cities.slice().reverse()">
+                      <h2  v-bind:class="[ (index+1)%2 == 1 ? 'red' :  'blue' ]"> {{ city }} </h2>
+                    </span>
+                    </div>
+                  </div> `
+    } );
+
+    var app = new Vue({
+      el: '#main_game_app',
+      data: function () {
+        return {
+          show_game_board: true
+        }
+      }
+    });
+  </script>
+<style>
+.blue {
+  color: blue;
+}
+.red {
+  color: red;
+}
+</style>
+</body>
+</html>
