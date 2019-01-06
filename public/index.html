@@ -131,7 +131,7 @@
                     <input placeholder="Введите название города" type="text" class="validate" name="" v-model= "current_player_answer" @input="check_current_player_answer()" @keyup.13="submit_answer()">
                     <label for="first_name">{{ current_player_answer }}</label>
                     </div>
-                    <button class="waves-effect waves-light btn" @click="submit_answer()" :disabled="!is_it_good_city"> <span v-if="current_player_answer === ''">Название <span v-if="last_letter != ''"> на {{ last_letter.toUpperCase() }}</span></span>
+                    <button class="waves-effect waves-light btn blue" @click="submit_answer()" :disabled="!is_it_good_city"> <span v-if="current_player_answer === ''">Название <span v-if="last_letter != ''"> на {{ last_letter.toUpperCase() }}</span></span>
                     <span v-else-if="!is_it_good_city">{{input_message}}</span>
                     <span v-else>{{ current_player_answer }}</span> </button><br>
                     <br>
