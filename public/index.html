@@ -62,7 +62,6 @@
       } ,
       methods: {
         update_user_answer(event) {
-          console.log(event.value);
           this.current_player_answer = event.value;
         },
         check_current_player_answer() {
@@ -94,7 +93,6 @@
         },
         submit_answer() {
           if (this.is_it_good_city) {
-            console.log('good proceed');
             this.is_it_good_city = false;
             this.get_last_letter();
             this.used_cities.push(this.current_player_answer.toLowerCase());
@@ -102,8 +100,6 @@
             if (this.used_cities.length % 2 == 1) {
               this.comp_move();
             }
-          } else {
-            console.log('BAD');
           }
         },
         comp_move() {
@@ -143,7 +139,7 @@
                   </div>
                     <div class="collection">
                       <a href="#!" class="collection-item" v-bind:class="[ (index+1)%2 == 1 ? 'red-text' :  'blue-text' ]" v-for="(city, index) of used_cities.slice().reverse()"><span v-if="(index+1)%2 == 1" class="new badge red" data-badge-caption="Comp"></span><span v-else class="new badge blue" data-badge-caption="">Вы</span>
-                        {{ city }}
+                        {{  city[0].toUpperCase() + city.slice(1) }}
                       </a>
                     </div>
                     <div>
