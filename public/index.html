@@ -81,7 +81,13 @@
           }
         },
         get_last_letter() {
-          this.last_letter = this.current_player_answer.charAt(this.current_player_answer.length-1);
+          bad_letters_array = ["ы", "ь", "ъ"];
+          last_letter_delta = 1;
+          this.last_letter = this.current_player_answer.charAt(this.current_player_answer.length-last_letter_delta);
+          while (bad_letters_array.indexOf( this.last_letter.toLowerCase() ) != -1) {
+            last_letter_delta++;
+            this.last_letter = this.current_player_answer.charAt(this.current_player_answer.length-last_letter_delta);
+          }
         }
       },
       template: `<div>
