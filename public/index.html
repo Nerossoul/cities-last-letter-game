@@ -3,20 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <title>Поиграем в города?</title>
     <script src="goroda.js"></script>
     <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
-  <div id="main_game_app">
-    <button @click="show_game_board=!show_game_board">{{show_game_board ? "Stop game" : "New game"}}</button>
-    <div v-if = "show_game_board">
-      <new-game></new-game>
+  <nav>
+    <div class="nav-wrapper blue">
+      <a href="#" class="brand-logo center">CITIES GAME</a>
     </div>
-    <div v-else>
-      Начните новую игру!
+  </nav>
+  <div class="container">
+
+  <div class="row">
+
+    <div class="col s12 m12">
+
+        <div id="main_game_app">
+          <div class="card">
+            <div class="card-content">
+            <button class="waves-effect waves-light btn blue" @click="show_game_board=!show_game_board">{{show_game_board ? "Stop game" : "New game"}}</button>
+          </div>
+          </div>
+
+              <div v-if = "show_game_board">
+                <new-game></new-game>
+              </div>
+              <div v-else>
+                Начните новую игру!
+              </div>
+      </div>
     </div>
   </div>
+
+
+
+
 
 
 
@@ -40,6 +66,7 @@
           this.current_player_answer = event.value;
         },
         check_current_player_answer() {
+          only_one_messge_check = false;
           this.input_message = '';
             correct_first_letter = false;
             correct_city_name = false;
@@ -47,22 +74,28 @@
           if (this.current_player_answer.toLowerCase().split('')[0] == this.last_letter || this.last_letter === '') {
              correct_first_letter = true;
           } else {
-            this.input_message = ' Должен начинаться с буквы: ' + this.last_letter;
+            this.input_message = 'Начните с ' + this.last_letter + " ";
+            only_one_messge_check = true;
           }
           if (this.cities.indexOf( this.current_player_answer.toLowerCase() ) != -1 ) {
             correct_city_name = true;
           } else {
-            this.input_message += '/ Нет такого города';
+            if (!only_one_messge_check) {
+              this.input_message += 'Нет такого города ';
+            }
           }
           if (this.used_cities.indexOf( this.current_player_answer.toLowerCase() ) != -1 ) {
             this_city_not_used_before = false;
-            this.input_message += '/ Этот город уже называли!';
+            if (!only_one_messge_check) {
+              this.input_message += 'Был такой!';
+            }
           }
           this.is_it_good_city = ( correct_first_letter && correct_city_name && this_city_not_used_before);
         },
         submit_answer() {
           if (this.is_it_good_city) {
             console.log('good proceed');
+            this.is_it_good_city = false;
             this.get_last_letter();
             this.used_cities.push(this.current_player_answer.toLowerCase());
             this.current_player_answer = '';
@@ -95,19 +128,26 @@
         }
       },
       template: `<div>
-                    <hr>
-                    <h4>Введите название города</h4>
-                    <input type="text" name="" v-model= "current_player_answer" @input="check_current_player_answer()" @keyup.13="submit_answer()"><button @click="submit_answer()" :disabled="!is_it_good_city"> GO </button>
-                    <br> {{ current_player_answer }}
-                    <span v-if="current_player_answer === ''">Напишите город</span>
-                    <span v-else-if="!is_it_good_city"> - {{input_message}}</span>
-                    <span v-else> - OK</span>
-                    <br><span v-if="last_letter != ''"> Начните с буквы: <b> {{ last_letter }} </b> </span>
-                    <hr>
+      <div class="card">
+        <div class="card-content">
+                    <div class="input-field col l12 m12 s12">
+
+                    <input placeholder="Введите название города" type="text" class="validate" name="" v-model= "current_player_answer" @input="check_current_player_answer()" @keyup.13="submit_answer()">
+                    <label for="first_name">{{ current_player_answer }}</label>
+                    </div>
+                    <button class="waves-effect waves-light btn" @click="submit_answer()" :disabled="!is_it_good_city"> <span v-if="current_player_answer === ''">Название <span v-if="last_letter != ''"> на {{ last_letter.toUpperCase() }}</span></span>
+                    <span v-else-if="!is_it_good_city">{{input_message}}</span>
+                    <span v-else>OK</span> </button><br>
+                    <br>
+                  </div>
+                  </div>
+                    <div class="collection">
+                      <a href="#!" class="collection-item" v-bind:class="[ (index+1)%2 == 1 ? 'red-text' :  'blue-text' ]" v-for="(city, index) of used_cities.slice().reverse()"><span v-if="(index+1)%2 == 1" class="new badge red" data-badge-caption="Comp"></span><span v-else class="new badge blue" data-badge-caption="">Вы</span>
+                        {{ city }}
+                      </a>
+                    </div>
                     <div>
-                    <span v-for="(city, index) of used_cities.slice().reverse()">
-                      <h2  v-bind:class="[ (index+1)%2 == 1 ? 'red' :  'blue' ]"> {{ city }} </h2>
-                    </span>
+
                     </div>
                   </div> `
     } );
@@ -121,13 +161,6 @@
       }
     });
   </script>
-<style>
-.blue {
-  color: blue;
-}
-.red {
-  color: red;
-}
-</style>
+</div>
 </body>
 </html>
