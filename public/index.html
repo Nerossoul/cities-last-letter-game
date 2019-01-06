@@ -133,7 +133,7 @@
                     </div>
                     <button class="waves-effect waves-light btn" @click="submit_answer()" :disabled="!is_it_good_city"> <span v-if="current_player_answer === ''">Название <span v-if="last_letter != ''"> на {{ last_letter.toUpperCase() }}</span></span>
                     <span v-else-if="!is_it_good_city">{{input_message}}</span>
-                    <span v-else>OK</span> </button><br>
+                    <span v-else>{{ current_player_answer }}</span> </button><br>
                     <br>
                   </div>
                   </div>
