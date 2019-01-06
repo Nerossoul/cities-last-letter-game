@@ -7,10 +7,12 @@
 </head>
 <body>
   <div id="main_game_app">
-    <button @click="show_game_board=!show_game_board">{{show_game_board ? "New game" : "Stop game"}}</button>
-    <div v-if = "show_game_board">Начните новую игру!</div>
-    <div v-else>
+    <button @click="show_game_board=!show_game_board">{{show_game_board ? "Stop game" : "New game"}}</button>
+    <div v-if = "show_game_board">
       <new-game></new-game>
+    </div>
+    <div v-else>
+      Начните новую игру!
     </div>
   </div>
 
@@ -112,7 +114,7 @@
       el: '#main_game_app',
       data: function () {
         return {
-          show_game_board: true
+          show_game_board: false
         }
       }
     });
